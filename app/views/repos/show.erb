@@ -1,0 +1,14 @@
+<h2><%= @repo.name%></h2>
+
+<%= form_for(@issue_pull_request) do |f| %>
+  <%= f.select :repo, [[@repo.name, @repo.id]] %>
+  <h2>ブランチ一覧</h2>
+  <%= f.select :branch, @branches.map{|t| [t.name, t.name]} %>
+
+  <h2>チケット一覧</h2>
+  <%= f.select :issue, @issues.map{|t| ["#{t.number}: #{t.title}", t.number]} %>
+
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>

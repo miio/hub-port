@@ -1,0 +1,2 @@
+class IssuePullRequest < PureModel
+end

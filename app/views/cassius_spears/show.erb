@@ -1,0 +1,5 @@
+<%= @my_repos.size %>件あります
+<% @my_repos.each do |repo| %>
+  <%= link_to repo.name, repo_path(repo) %><br />
+<% end %>
+
