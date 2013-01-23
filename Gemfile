@@ -26,6 +26,8 @@ gem 'omniauth-github'
 
 gem "github_api"
 
+gem 'grit'
+
 group :development do
   # App server for development
   gem 'thin'
