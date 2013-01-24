@@ -6,13 +6,12 @@ class WorkingRepo
   PULL_REQUEST_COPY_ISSUE_PREFIX = "develop "
   PULL_REQUEST_COPY_ISSUE_SUFFIX = ""
   def initialize user, owner, repo
-    Grit::Git.with_timeout(3600)
     @user = user
     @owner = owner
     @repo = repo
     #TODO set user rsa keys
     remote_addr = "git@github.com:#{@repo.owner}/#{@repo.name}.git"
-    clone_args = {quiet: false, verbose: true, progress: true, branch: 'master'}
+    clone_args = {quiet: false, verbose: true, progress: true, branch: 'master', timeout: false}
     @grit = self.create_or_open "#{self.work_path}", remote_addr, clone_args
   end
 
