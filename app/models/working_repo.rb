@@ -69,8 +69,7 @@ class WorkingRepo
   end
 
   def create_pull_request title = ""
-    auth = Authentication.find @user.id
-    github = Github.new oauth_token: auth.access_token
+    github = Github.new oauth_token: @user.profile.access_token
     begin
       pull_req = github.pull_requests.get @repo.owner, @repo.name, @issue_number
     rescue
@@ -83,7 +82,7 @@ class WorkingRepo
       unless link_brnches.include?("#{self.branch_name}")
         github.pull_requests.create(@repo.owner, @repo.name,
                                     title: title,
-                                    head: "#{@user.screen_name}:#{self.branch_name}",
+                                    head: "#{user.profile.screen_name}:#{self.branch_name}",
                                     base: "master"
                                    )
       end
@@ -103,7 +102,7 @@ class WorkingRepo
   end
 
   def work_path
-    "#{REPO_PATH}/#{@user.screen_name}/#{@repo.owner}/#{@repo.name}/"
+    "#{REPO_PATH}/#{@user.profile.screen_name}/#{@repo.owner}/#{@repo.name}/"
   end
 
 end
