@@ -32,7 +32,7 @@ group :development do
   # App server for development
   gem 'thin'
 end
-
+gem 'mysql2'
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
