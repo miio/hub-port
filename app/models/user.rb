@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
       provider: omniauth['provider'], uid: omniauth['uid'],
       access_token: omniauth['credentials']['token'],
       access_secret: omniauth['credentials']['secret'],
-      screen_name: data['name'],
+      screen_name: data['login'],
     }
   end
   def set_for_github omniauth

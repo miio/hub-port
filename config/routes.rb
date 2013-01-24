@@ -5,6 +5,9 @@ HubPort::Application.routes.draw do
     get '/users/auth/:provider/callback', to: 'authentications#callback'
   end
   resource :cassius_spears
+  resources :user_repos do
+    resources :user_repo_works
+  end
   resources :repos do
     resources :branches do
       resources :issues

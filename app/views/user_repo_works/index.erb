@@ -1,0 +1,11 @@
+<h3><%= @user_repo.repo.name %></h3>
+<% @user_repo_works.each do |work| %>
+  <p>
+    <h3><%= link_to work.path, user_repo_user_repo_works_path(work.repo, work) %></h3>
+  </p>
+  <hr />
+<% end %>
+<%= form_for [@user_repo, @user_repo_work] do |f| %>
+  <%= f.text_field :path %>
+  <%= f.submit "アップロード先の追加" %>
+<% end %>

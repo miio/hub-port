@@ -1,5 +1,30 @@
-<%= @my_repos.size %>件あります
-<% @my_repos.each do |repo| %>
-  <%= link_to repo.name, repo_path(repo) %><br />
+<h3>作業エリア</h3>
+<%= @user_repos.size %>件あります
+<% @user_repos.each do |my_repo| %>
+  <p>
+    <h3><%= my_repo.repo.name %></h3>
+    <%= link_to "プルリクエスト変換", repo_path(my_repo.repo) %><br />
+    <%= link_to "作業エリアの確認", user_repo_user_repo_works_path(my_repo) %><br />
+  </p>
+  <hr />
 <% end %>
 
+<h3>一覧にないリポジトリをマイアップローダに追加</h3>
+<%= form_for @repo do |f| %>
+    Owner: <%= f.text_field :owner %>
+    Name: <%= f.text_field :name %>
+  <%= f.submit "登録済リポジトリに追加" %>
+<% end %>
+<h3>githubにあるリポジトリ一覧</h3>
+<%= @remote_repos.size %>件あります
+<% @remote_repos.each do |repo| %>
+  <p>
+    <h3><%= repo.owner %>/<%= repo.name %></h3>
+    <%= form_for @user_repo do |f| %>
+      <%= f.hidden_field :repo_id, value: repo.id %>
+      <%= f.submit "マイアップローダに追加" %>
+    <% end %>
+    <%= link_to "プルリクエスト変換", repo_path(repo) %><br />
+  </p>
+  <hr />
+<% end %>

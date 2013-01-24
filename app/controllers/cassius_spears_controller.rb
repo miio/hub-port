@@ -11,9 +11,11 @@ class CassiusSpearsController < ApplicationController
           elem.save!
         end
     end
-    @my_repos = Repo.where(owner: current_user.profile.screen_name).all
-    @my_repos = Repo.all
-    #@user_repos = UserRepo.where(user_id: current_user.id).all
+    @remote_repos = Repo.where(owner: current_user.profile.screen_name).all
+    @remote_repos = Repo.all
+    @user_repos = UserRepo.where(user_id: current_user.id).all
+    @user_repo = UserRepo.new
+    @repo = Repo.new
     #@branches = github.repos.branches 'miio', 'ggj2012'
     #@issues = github.issues.list user: 'miio', repo: 'ggj2012'
     #@pull_reqs = 

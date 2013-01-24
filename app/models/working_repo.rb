@@ -9,6 +9,7 @@ class WorkingRepo
     @user = user
     @owner = owner
     @repo = repo
+    #TODO set user rsa keys
     remote_addr = "git@github.com:#{@repo.owner}/#{@repo.name}.git"
     clone_args = {quiet: false, verbose: true, progress: true, branch: 'master'}
     @grit = self.create_or_open "#{self.work_path}", remote_addr, clone_args
@@ -77,12 +78,15 @@ class WorkingRepo
         issue = github.issues.get @repo.owner, @repo.name, @issue_number
         title = "#{PULL_REQUEST_COPY_ISSUE_PREFIX}#{issue.title}#{PULL_REQUEST_COPY_ISSUE_SUFFIX}"
       end
-      puts title
-      github.pull_requests.create(@repo.owner, @repo.name,
-                                  title: title,
-                                  head: "#{@repo.owner}:#{self.branch_name}",
-                                  base: "master"
-                                 )
+      pull_reqs = github.pull_requests.list @repo.owner, @repo.name
+      link_branches = pull_reqs.map {|i| i.head.ref}
+      unless link_brnches.include?("#{self.branch_name}")
+        github.pull_requests.create(@repo.owner, @repo.name,
+                                    title: title,
+                                    head: "#{@user.screen_name}:#{self.branch_name}",
+                                    base: "master"
+                                   )
+      end
     end
   end
 
@@ -99,7 +103,7 @@ class WorkingRepo
   end
 
   def work_path
-    "#{REPO_PATH}/#{@repo.owner}/#{@repo.name}/"
+    "#{REPO_PATH}/#{@user.screen_name}/#{@repo.owner}/#{@repo.name}/"
   end
 
 end
