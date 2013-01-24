@@ -6,6 +6,7 @@ class WorkingRepo
   PULL_REQUEST_COPY_ISSUE_PREFIX = "develop "
   PULL_REQUEST_COPY_ISSUE_SUFFIX = ""
   def initialize user, owner, repo
+    Grit::Git.with_timeout(3600)
     @user = user
     @owner = owner
     @repo = repo
