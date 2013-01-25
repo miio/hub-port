@@ -1,11 +1,9 @@
-<h3><%= @user_repo.repo.name %></h3>
-<% @user_repo_works.each do |work| %>
-  <p>
-    <h3><%= link_to work.path, user_repo_works_path(work) %></h3>
-  </p>
-  <hr />
-<% end %>
-<%= form_for [@user_repo, @user_repo_work] do |f| %>
-  <%= f.text_field :path %>
-  <%= f.submit "アップロード先の追加" %>
+<h3><%= @user_repo.repo.name %>/<%= @user_repo_work.path %></h3>
+<%= form_for([@user_repo, @user_repo_work], url: { action: :push }, html: { multipart: true }) do |f| %>
+  ファイル<%= f.file_field :blob %><br />
+  アップロードコメント(必須)<%= text_field_tag :message %><br />
+  <h2>チケット一覧(optional)</h2>
+  <%= select_tag :issue, options_for_select( @issues.map{|t| ["#{t.number}: #{t.title}", t.number]}) %><br />
+  <%= f.hidden_field :id,  value: @user_repo_work.id %>
+  <%= f.submit "アップロード" %>
 <% end %>

@@ -6,7 +6,11 @@ HubPort::Application.routes.draw do
   end
   resource :cassius_spears
   resources :user_repos do
-    resources :user_repo_works
+    resources :user_repo_works do
+        collection do
+            put 'push'
+        end
+    end
   end
   resources :repos do
     resources :branches do

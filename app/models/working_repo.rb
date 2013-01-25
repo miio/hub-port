@@ -13,6 +13,7 @@ class WorkingRepo
     remote_addr = "git@github.com:#{@repo.owner}/#{@repo.name}.git"
     clone_args = {quiet: false, verbose: true, progress: true, branch: 'master', timeout: false}
     @grit = self.create_or_open "#{self.work_path}", remote_addr, clone_args
+    Dir.chdir(@grit.working_dir) { system("git checkout -b #{@user.profile.screen_name}/develop master") }
   end
 
   def issue_number= issue_number
@@ -53,16 +54,14 @@ class WorkingRepo
 
   def commit file_name, file_path, message
     @grit.git.pull
-    file_name = 'test1.txt'
-    file_path = "#{self.work_path}#{file_path}#{file_name}"
-    File.open(file_path, 'ab+') { |f| f << 'Committed using Grit' }
+    full_file_path = "#{self.work_path}#{file_path}#{file_name}"
 
     # git add & git commit!
     blob = Grit::Blob.create(
-      @grit, { name: file_name, data: File.read(file_path) }
+      @grit, { name: file_name, data: File.read(full_file_path) }
     )
-    Dir.chdir(@grit.working_dir) { @grit.add(blob.name) }
-    if COMMIT_WITH_ISSUE_NUMBER
+    Dir.chdir("#{self.work_path}#{file_path}") { @grit.add(blob.name) }
+    if COMMIT_WITH_ISSUE_NUMBER and !@issue_number.empty?
       message = "refs ##{@issue_number} #{message}"
     end
     @grit.commit_index(message)
@@ -79,10 +78,10 @@ class WorkingRepo
       end
       pull_reqs = github.pull_requests.list @repo.owner, @repo.name
       link_branches = pull_reqs.map {|i| i.head.ref}
-      unless link_brnches.include?("#{self.branch_name}")
+      unless link_branches.include?("#{self.branch_name}")
         github.pull_requests.create(@repo.owner, @repo.name,
                                     title: title,
-                                    head: "#{user.profile.screen_name}:#{self.branch_name}",
+                                    head: "#{@repo.owner}:#{self.branch_name}",
                                     base: "master"
                                    )
       end
@@ -94,7 +93,7 @@ class WorkingRepo
   end
 
   def branch_prefix
-    "issue/"
+    "#{@user.profile.screen_name}/"
   end
 
   def branch_name
@@ -102,7 +101,7 @@ class WorkingRepo
   end
 
   def work_path
-    "#{REPO_PATH}/#{@user.profile.screen_name}/#{@repo.owner}/#{@repo.name}/"
+    "#{REPO_PATH}#{@user.profile.screen_name}/#{@repo.owner}/#{@repo.name}/"
   end
 
 end
